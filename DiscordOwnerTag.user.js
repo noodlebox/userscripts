@@ -35,6 +35,8 @@
         return mutated.add(descendants).add(ancestors);
     };
 
+    var prevOwnerId;
+
     // Watch for new usernames
     var chat_observer = new MutationObserver(function (mutations, observer) {
         mutations.forEach(function (mutation) {
@@ -46,16 +48,33 @@
             }
             var ownerId = getInternalProps(server).guild.ownerId;
 
-            // Get the set of usernames affected by this mutation
+            var members;
+            // Check if changed servers and need to redo member list tagging
+            // React likes to make minimal changes to the DOM, so owner tags
+            // will stick around (or not get added) when a user is in both this
+            // and the previous server.
+            if (ownerId !== prevOwnerId) {
+                // Get all visible members
+                members = $(".member-username");
+                // Remove tags that were added
+                members.find(".kawaii-tag").remove();
+                members.filter(".kawaii-tagged").removeClass("kawaii-tagged");
+            } else {
+                // Get the set of server members affected by this mutation
+                members = mutationFind(mutation, ".member-username");
+            }
+            members = members.filter((_, e) => getInternalProps(e).user.id === ownerId);
+
+            // Get the set of message authors affected by this mutation
             var usernames = mutationFind(mutation, ".username-wrapper")
                 .filter((_, e) => getInternalProps(e).message.author.id === ownerId);
-            var members = mutationFind(mutation, ".member-username")
-                .filter((_, e) => getInternalProps(e).user.id === ownerId);
 
             // Process usernames
             usernames.add(members).not(".kawaii-tagged")
-                .append($("<span>", {class: "bot-tag"}).text("OWNER"))
+                .append($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
                 .addClass("kawaii-tagged");
+
+            prevOwnerId = ownerId;
         });
     });
 
