@@ -2,7 +2,7 @@
 // @name         DiscordOwnerTag
 // @namespace    https://files.noodlebox.moe/
 // @downloadURL  https://files.noodlebox.moe/userscripts/DiscordOwnerTag.user.js
-// @version      1.0.1
+// @version      1.0.2
 // @description  Show a tag next to a Discord server owner's name
 // @author       noodlebox
 // @require      https://code.jquery.com/jquery-3.1.0.min.js
