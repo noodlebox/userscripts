@@ -26,6 +26,28 @@
         }
     }
 
+    // Get the relevant user ID for an element, or undefined
+    function getUserId(e) {
+        var props = getInternalProps(e);
+        if (props === undefined) {
+            return undefined;
+        }
+
+        try {
+            return props.user.id;
+        } catch (err) {
+            // Catch TypeError if no user in props
+        }
+
+        try {
+            return props.message.author.id;
+        } catch (err) {
+            // Catch TypeError if no message in props
+        }
+
+        return undefined;
+    }
+
     // Helper function for finding all elements matching selector affected by a mutation
     var mutationFind = function (mutation, selector) {
         var target = $(mutation.target), addedNodes = $(mutation.addedNodes);
@@ -40,37 +62,34 @@
     // Watch for new usernames
     var chat_observer = new MutationObserver(function (mutations, observer) {
         mutations.forEach(function (mutation) {
-            // Get the ID of the server's owner
-            var server = $(".guild.selected")[0];
-            if (server === undefined) {
-                // Not looking at a server
+            var ownerId, usernames;
+            try {
+                // Get the ID of the server's owner
+                ownerId = getInternalProps($(".guild.selected")[0]).guild.ownerId;
+            } catch (err) {
+                // (Probably) not looking at a server
                 return;
             }
-            var ownerId = getInternalProps(server).guild.ownerId;
 
-            var members;
             // Check if changed servers and need to redo member list tagging
             // React likes to make minimal changes to the DOM, so owner tags
             // will stick around (or not get added) when a user is in both this
             // and the previous server.
             if (ownerId !== prevOwnerId) {
                 // Get all visible members
-                members = $(".member-username");
+                usernames = $(".member-username");
                 // Remove tags that were added
-                members.find(".kawaii-tag").remove();
-                members.filter(".kawaii-tagged").removeClass("kawaii-tagged");
+                usernames.find(".kawaii-tag").remove();
+                usernames.filter(".kawaii-tagged").removeClass("kawaii-tagged");
+                // Add the set of message authors affected by this mutation
+                usernames = usernames.add(mutationFind(mutation, ".username-wrapper"));
             } else {
-                // Get the set of server members affected by this mutation
-                members = mutationFind(mutation, ".member-username");
+                // Get the set of message authors and server members affected by this mutation
+                usernames = mutationFind(mutation, ".member-username, .username-wrapper");
             }
-            members = members.filter((_, e) => getInternalProps(e).user.id === ownerId);
-
-            // Get the set of message authors affected by this mutation
-            var usernames = mutationFind(mutation, ".username-wrapper")
-                .filter((_, e) => getInternalProps(e).message.author.id === ownerId);
 
             // Process usernames
-            usernames.add(members).not(".kawaii-tagged")
+            usernames.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
                 .append($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
                 .addClass("kawaii-tagged");
 
