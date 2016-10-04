@@ -77,20 +77,20 @@
             // and the previous server.
             if (ownerId !== prevOwnerId) {
                 // Get all visible members
-                usernames = $(".member-username");
+                usernames = $(".member-username-inner");
                 // Remove tags that were added
-                usernames.find(".kawaii-tag").remove();
+                usernames.siblings(".kawaii-tag").remove();
                 usernames.filter(".kawaii-tagged").removeClass("kawaii-tagged");
                 // Add the set of message authors affected by this mutation
-                usernames = usernames.add(mutationFind(mutation, ".username-wrapper"));
+                usernames = usernames.add(mutationFind(mutation, ".user-name"));
             } else {
                 // Get the set of message authors and server members affected by this mutation
-                usernames = mutationFind(mutation, ".member-username, .username-wrapper");
+                usernames = mutationFind(mutation, ".member-username-inner, .user-name");
             }
 
             // Process usernames
             usernames.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
-                .append($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
+                .after($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
                 .addClass("kawaii-tagged");
 
             prevOwnerId = ownerId;
