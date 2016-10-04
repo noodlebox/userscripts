@@ -48,60 +48,96 @@
         return undefined;
     }
 
+    // Get the relevant guild owner ID for an element, or undefined
+    function getOwnerId(e) {
+        var props = getInternalProps(e);
+        if (props === undefined) {
+            return undefined;
+        }
+
+        try {
+            return props.guild.ownerId;
+        } catch (err) {
+            // Catch TypeError if no guild in props
+        }
+
+        return undefined;
+    }
+
+    function processServer(mutation) {
+        var ownerId, usernames, tags;
+
+        // Get the ID of the server's owner
+        ownerId = getOwnerId($(".guild.selected")[0]);
+        if (ownerId === undefined) {
+            // (Probably) not looking at a server
+            return;
+        }
+
+        // Check if changed servers and need to redo member list tagging
+        // React likes to make minimal changes to the DOM, so owner tags
+        // will stick around (or not get added) when a user is in both this
+        // and the previous server.
+        if (ownerId !== prevOwnerId) {
+            // Get all visible members
+            usernames = $(".member-username-inner");
+            // Remove tags that were added
+            usernames.siblings(".kawaii-tag").remove();
+            usernames.filter(".kawaii-tagged").removeClass("kawaii-tagged");
+            // Add the set of message authors affected by this mutation
+            usernames = usernames.add(mutationFind(mutation, ".user-name"));
+        } else {
+            // Get the set of message authors and server members affected by this mutation
+            usernames = mutationFind(mutation, ".member-username-inner, .user-name");
+        }
+
+        // Process usernames
+        usernames.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
+            .after($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
+            .addClass("kawaii-tagged");
+
+        tags = mutationFind(mutation, ".discord-tag");
+
+        tags.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
+            .append($("<span>", {class: "bot-tag bot-tag-invert kawaii-tag"}).text("OWNER"))
+            .addClass("kawaii-tagged");
+
+        prevOwnerId = ownerId;
+    }
+
+    function processProfile(mutation) {
+        var profile, userId, guilds;
+
+        profile = mutationFind(mutation, "#user-profile-modal");
+        userId = getUserId(profile[0]);
+        if (userId === undefined) {
+            // (Probably) not looking at a profile
+            return;
+        }
+
+        guilds = profile.find(".guild .avatar-large");
+
+        guilds.filter((_, e) => getOwnerId(e) === userId).parent().not(".kawaii-tagged")
+            .append($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
+            .addClass("kawaii-tagged");
+    }
+
     // Helper function for finding all elements matching selector affected by a mutation
-    var mutationFind = function (mutation, selector) {
+    function mutationFind(mutation, selector) {
         var target = $(mutation.target), addedNodes = $(mutation.addedNodes);
         var mutated = target.add(addedNodes).filter(selector);
         var descendants = addedNodes.find(selector);
         var ancestors = target.parents(selector);
         return mutated.add(descendants).add(ancestors);
-    };
+    }
 
     var prevOwnerId;
 
     // Watch for new usernames
-    var chat_observer = new MutationObserver(function (mutations, observer) {
+    new MutationObserver(function (mutations, observer) {
         mutations.forEach(function (mutation) {
-            var ownerId, usernames, tags;
-            try {
-                // Get the ID of the server's owner
-                ownerId = getInternalProps($(".guild.selected")[0]).guild.ownerId;
-            } catch (err) {
-                // (Probably) not looking at a server
-                return;
-            }
-
-            // Check if changed servers and need to redo member list tagging
-            // React likes to make minimal changes to the DOM, so owner tags
-            // will stick around (or not get added) when a user is in both this
-            // and the previous server.
-            if (ownerId !== prevOwnerId) {
-                // Get all visible members
-                usernames = $(".member-username-inner");
-                // Remove tags that were added
-                usernames.siblings(".kawaii-tag").remove();
-                usernames.filter(".kawaii-tagged").removeClass("kawaii-tagged");
-                // Add the set of message authors affected by this mutation
-                usernames = usernames.add(mutationFind(mutation, ".user-name"));
-            } else {
-                // Get the set of message authors and server members affected by this mutation
-                usernames = mutationFind(mutation, ".member-username-inner, .user-name");
-            }
-
-            // Process usernames
-            usernames.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
-                .after($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
-                .addClass("kawaii-tagged");
-
-            tags = mutationFind(mutation, ".discord-tag");
-
-            tags.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
-                .append($("<span>", {class: "bot-tag bot-tag-invert kawaii-tag"}).text("OWNER"))
-                .addClass("kawaii-tagged");
-
-            prevOwnerId = ownerId;
+            processServer(mutation);
+            processProfile(mutation);
         });
-    });
-
-    chat_observer.observe(document, { childList:true, subtree:true });
+    }).observe(document, { childList:true, subtree:true });
 })(jQuery.noConflict(true));
