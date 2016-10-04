@@ -62,7 +62,7 @@
     // Watch for new usernames
     var chat_observer = new MutationObserver(function (mutations, observer) {
         mutations.forEach(function (mutation) {
-            var ownerId, usernames;
+            var ownerId, usernames, tags;
             try {
                 // Get the ID of the server's owner
                 ownerId = getInternalProps($(".guild.selected")[0]).guild.ownerId;
@@ -91,6 +91,12 @@
             // Process usernames
             usernames.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
                 .after($("<span>", {class: "bot-tag kawaii-tag"}).text("OWNER"))
+                .addClass("kawaii-tagged");
+
+            tags = mutationFind(mutation, ".discord-tag");
+
+            tags.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged")
+                .append($("<span>", {class: "bot-tag bot-tag-invert kawaii-tag"}).text("OWNER"))
                 .addClass("kawaii-tagged");
 
             prevOwnerId = ownerId;
