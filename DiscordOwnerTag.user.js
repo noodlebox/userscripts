@@ -111,7 +111,6 @@
         // Process usernames
         usernames.filter((_, e) => getUserId(e) === ownerId).not(".kawaii-tagged").after(function () {
             var color = getUserColor(this);
-            console.info(this, color);
             var tag = $("<span>", {
                 class: "bot-tag kawaii-tag",
             }).text("OWNER");
