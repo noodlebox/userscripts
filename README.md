@@ -6,8 +6,11 @@ Assorted userscripts, too small to warrant their own repos. These scripts are al
 ### CGCookieGalleryFix.user.js  (cgcookie.com)
 Fix bug in gallery when too few items exist to allow scrolling. Bug was reported, but hasn't been fixed after quite a while.
 
+### DiscordAutoGif.user.js (discordapp.com)
+Automatically play GIF and GIFV embeds without hovering. Note that animated content can eat a bit of CPU time (which is why auto-play is disabled in the first place).
+
 ### DiscordOwnerTag.user.js (discordapp.com)
-Show a tag next to a Discord server owner's name. Simple feature addition, since there's nothing else in the UI to identify a server owner. For more significant Discord tweaks, see [KawaiiDiscord](https://github.com/noodlebox/KawaiiDiscord).
+Show a tag next to a Discord server owner's name. Simple feature addition, since there's nothing else in the UI to identify a server owner.
 
 ### KawaiiLab.user.js (sfmlab.com)
 Make SFMLab more kawaii. Pointless tweak to the site logo, commemorating previous KawaiiLab and MikeLab hacks.
