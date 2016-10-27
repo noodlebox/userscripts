@@ -5,7 +5,7 @@
 // @version      1.2.1
 // @description  Show a tag next to a Discord server owner's name
 // @author       noodlebox
-// @require      https://code.jquery.com/jquery-3.1.0.min.js
+// @require      https://code.jquery.com/jquery-3.1.1.min.js
 // @match        *://discordapp.com/channels/*
 // @match        *://discordapp.com/invite/*
 // @match        *://canary.discordapp.com/channels/*
