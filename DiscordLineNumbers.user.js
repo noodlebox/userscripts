@@ -2,7 +2,7 @@
 // @name         DiscordLineNumbers
 // @namespace    https://files.noodlebox.moe/
 // @downloadURL  https://files.noodlebox.moe/userscripts/DiscordLineNumbers.user.js
-// @version      1.1.0
+// @version      1.1.1
 // @description  Add line numbers to code blocks
 // @author       noodlebox
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
