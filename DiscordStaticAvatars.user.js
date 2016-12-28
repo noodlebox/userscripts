@@ -2,7 +2,7 @@
 // @name         DiscordStaticAvatars
 // @namespace    https://files.noodlebox.moe/
 // @downloadURL  https://files.noodlebox.moe/userscripts/DiscordStaticAvatars.user.js
-// @version      1.0.0
+// @version      1.0.1
 // @description  Don't animate avatars in the chat area
 // @author       noodlebox
 // @require      https://code.jquery.com/jquery-3.1.1.min.js
