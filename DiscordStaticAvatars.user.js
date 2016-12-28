@@ -72,7 +72,7 @@
         return null;
     }
 
-    $(".theme-dark").on("mouseenter.staticavatars", ".message-group", function () {
+    $(".theme-dark, .theme-light").on("mouseenter.staticavatars", ".message-group", function () {
         try {
             getOwnerInstance(this, {include: ["MessageGroup"]}).setState({animate: false, animatedAvatar: false});
         } catch (err) {
