@@ -15,6 +15,9 @@ Add line numbers to code blocks. It's recommended to add DiscordLineNumbers.css 
 ### DiscordOwnerTag.user.js (discordapp.com)
 Show a tag next to a Discord server owner's name. Simple feature addition, since there's nothing else in the UI to identify a server owner.
 
+### DiscordStaticAvatars.user.js (discordapp.com)
+Don't animate avatars in the chat area.
+
 ### KawaiiLab.user.js (sfmlab.com)
 Make SFMLab more kawaii. Pointless tweak to the site logo, commemorating previous KawaiiLab and MikeLab hacks.
 
