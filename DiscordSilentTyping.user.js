@@ -149,15 +149,7 @@
                         return m;
                 }
             }
-            console.warn('Cannot find loaded module in cache. Loading all modules may have unexpected side effects');
-            for (let i = 0; i < req.m.length; ++i) {
-                let m = req(i);
-                if (m && m.__esModule && m.default)
-                    m = m.default;
-                if (m && filter(m))
-                    return m;
-            }
-            console.warn('Cannot find module');
+            console.warn('Cannot find loaded module in cache.');
             return null;
         };
 
@@ -182,5 +174,5 @@
 
     })();
 
-    start();
+    window.setTimeout(start, 5000);
 })();
