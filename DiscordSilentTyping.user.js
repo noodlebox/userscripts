@@ -2,7 +2,7 @@
 // @name         DiscordSilentTyping
 // @namespace    https://files.noodlebox.moe/
 // @downloadURL  https://files.noodlebox.moe/userscripts/DiscordSilentTyping.user.js
-// @version      2.1.1
+// @version      2.1.2
 // @description  Don't send typing notifications
 // @author       noodlebox
 // @match        *://*.discordapp.com/channels/*
