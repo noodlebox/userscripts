@@ -18,12 +18,12 @@
     let cancel = null;
 
     const start = function () {
-        const module = WebpackModules.findByUniqueProperties(["sendTyping"]);
+        const module = WebpackModules.findByUniqueProperties(["startTyping"]);
         if (!module) {
             console.error("SilentTyping:", "unable to monkey patch sendTyping method");
             return;
         }
-        cancel = monkeyPatch(module, "sendTyping", {instead: ()=>{}});
+        cancel = monkeyPatch(module, "startTyping", {instead: ()=>{}});
     };
 
     const stop = function () {
